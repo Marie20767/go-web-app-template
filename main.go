@@ -1,29 +1,23 @@
 package main
 
 import (
-	"errors"
 	"log"
 	"os"
 
 	"github.com/Marie20767/go-web-app-template/api/routes"
 	"github.com/Marie20767/go-web-app-template/internal/store"
-	"github.com/joho/godotenv"
+	"github.com/Marie20767/go-web-app-template/internal/utils"
 	"github.com/labstack/echo/v4"
 	_ "github.com/lib/pq"
 )
 
 func run() error {
-	if err := godotenv.Load(); err != nil {
+	c, err := utils.ParseEnv()
+	if err != nil {
 		return err
 	}
 
-	dbURL := os.Getenv("DATABASE_URL")
-	port := os.Getenv("PORT")
-	if dbURL == "" || port == "" {
-		return errors.New("not all environment variables are set")
-	}
-
-	db, err := store.NewStore(dbURL)
+	db, err := store.NewStore(c.DbURL)
 	if err != nil {
 		return err
 	}
@@ -32,7 +26,7 @@ func run() error {
 
 	e := echo.New()
 	routes.RegisterAll(e, db)
-	return e.Start(":" + port);
+	return e.Start(":" + c.Port);
 }
 
 func main() {
