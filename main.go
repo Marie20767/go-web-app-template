@@ -5,11 +5,12 @@ import (
 	"log"
 	"os"
 
+	"github.com/labstack/echo/v4"
+	_ "github.com/lib/pq"
+
 	"github.com/Marie20767/go-web-app-template/api/routes"
 	"github.com/Marie20767/go-web-app-template/internal/store"
 	"github.com/Marie20767/go-web-app-template/internal/utils/config"
-	"github.com/labstack/echo/v4"
-	_ "github.com/lib/pq"
 )
 
 func run() error {

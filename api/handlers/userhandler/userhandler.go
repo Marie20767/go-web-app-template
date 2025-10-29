@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/Marie20767/go-web-app-template/internal/store"
 	"github.com/labstack/echo/v4"
+
+	"github.com/Marie20767/go-web-app-template/internal/store"
 )
 
 type UserHandler struct {

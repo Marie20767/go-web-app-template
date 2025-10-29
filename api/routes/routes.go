@@ -1,10 +1,10 @@
 package routes
 
 import (
+	"github.com/labstack/echo/v4"
+
 	handlers "github.com/Marie20767/go-web-app-template/api/handlers/userhandler"
 	"github.com/Marie20767/go-web-app-template/internal/store"
-
-	"github.com/labstack/echo/v4"
 )
 
 func RegisterAll(e *echo.Echo, db *store.Store) {
