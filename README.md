@@ -11,9 +11,9 @@
 - `go.mod`
 - `Makefile`
 - `Dockerfile`
-- `docker compose.yaml`
+- `docker-compose.yaml`
 - `golangci.yaml`
-- `internal/tests/docker compose.yaml`
+- `internal/tests/docker-compose.yaml`
 
 And:
 - Update `store/schema.sql` with a new schema
