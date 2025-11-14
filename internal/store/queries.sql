@@ -1,5 +1,2 @@
--- name: GetUserByID :one
-SELECT id, name, email FROM users WHERE id = $1;
-
--- name: GetUserByName :one
-SELECT id, name, email FROM users WHERE name = $1;
+-- name: GetDummyItem :one
+SELECT id, name FROM dummy WHERE id = $1;

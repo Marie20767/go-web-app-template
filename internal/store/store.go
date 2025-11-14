@@ -2,53 +2,55 @@ package store
 
 import (
 	"context"
-	"database/sql"
+	"errors"
 	"fmt"
-	"time"
+
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/Marie20767/go-web-app-template/internal/store/sqlc"
-	"github.com/Marie20767/go-web-app-template/internal/utils/config"
 )
 
 type Store struct {
-	conn    *sql.DB
+	pool    *pgxpool.Pool
 	Queries *sqlc.Queries
 }
 
-func connectDB(ctx context.Context, cfg *config.Config) (*sql.DB, error) {
-	dbConn, err := sql.Open("postgres", cfg.DbURL)
+func NewStore(ctx context.Context, dbUrl string) (*Store, error) {
+	poolConfig, err := pgxpool.ParseConfig(dbUrl)
 	if err != nil {
-		return nil, fmt.Errorf("db connection error: %w", err)
+		return nil, fmt.Errorf("failed to parse config: %v", err)
 	}
 
-	timeOut := time.Duration(cfg.DbTimeout) * time.Second
-	dbCtx, cancel := context.WithTimeout(ctx, timeOut)
-	defer cancel()
-	err = dbConn.PingContext(dbCtx)
+	pool, err := pgxpool.NewWithConfig(ctx, poolConfig)
 	if err != nil {
-		cErr := dbConn.Close()
-		if cErr != nil {
-			return nil, fmt.Errorf("failed to ping DB: %v; also failed to close DB: %v", err, cErr)
-		}
-		return nil, fmt.Errorf("failed to ping DB: %w", err)
+		return nil, fmt.Errorf("failed to create pool: %v", err)
 	}
 
-	return dbConn, nil
-}
-
-func NewStore(ctx context.Context, cfg *config.Config) (*Store, error) {
-	dbConn, err := connectDB(ctx, cfg)
-
+	err = pool.Ping(ctx)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to ping db: %v", err)
+	}
+
+	err = runMigrations(dbUrl)
+	if err != nil {
+		return nil, fmt.Errorf("failed to run migrations: %v", err)
 	}
 
 	return &Store{
-		conn:    dbConn,
-		Queries: sqlc.New(dbConn),
+		pool:    pool,
+		Queries: sqlc.New(pool),
 	}, nil
 }
 
-func (s *Store) Close() error {
-	return s.conn.Close()
+func (s *Store) Close() {
+	s.pool.Close()
+}
+
+func (s *Store) Ping(ctx context.Context) error {
+	return s.pool.Ping(ctx)
+}
+
+func IsNotFoundErr(err error) bool {
+	return errors.Is(err, pgx.ErrNoRows)
 }
