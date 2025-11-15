@@ -14,6 +14,8 @@
 - `docker-compose.yaml`
 - `golangci.yaml`
 - `internal/tests/docker-compose.yaml`
+- `migrations/000001_init.down`
+- `migrations/000001_init.up`
 
 And:
 - Update `store/schema.sql` with a new schema
