@@ -16,7 +16,7 @@ lint/install:
 lint/run:
 	bin/golangci-lint run --config .golangci.yaml
 
-lint-fix:
+lint/fix:
 	bin/golangci-lint run --config .golangci.yaml --fix
 
 test:

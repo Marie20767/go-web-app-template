@@ -24,7 +24,7 @@ var logLevelMap = map[string]slog.Level{
 }
 
 func ParseEnv() (*Config, error) {
-	// Ignore error because in production there will be no .env file, env vars will be passed
+	// ignore error because in production there will be no .env file, env vars will be passed
 	// in at runtime via docker run command/docker compose
 	_ = godotenv.Load()
 

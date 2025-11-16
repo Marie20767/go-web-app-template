@@ -52,7 +52,7 @@ func run() error {
 	}()
 
 	select {
-	case <-ctx.Done(): // Blocks until server error OR signal received (e.g. by ctrl-C or process killed)
+	case <-ctx.Done(): // blocks until server error OR signal received (e.g. by ctrl-C or process killed)
 		slog.Info("shutdown signal received")
 	case svrErr := <-serverErr:
 		err = svrErr
